@@ -1,0 +1,29 @@
+<!doctype html>
+<!-- Synthetic fixture: German prices, linked sections, empty ticket types and unknown availability. -->
+<html lang="de"><head><meta charset="utf-8">
+<script type="application/ld+json">
+{"@graph":[{"@type":["Event"],"name":"Fixture Event","startDate":"2027-05-22T19:30:00+02:00","location":{"name":"Fixture Venue","address":{"addressLocality":"Fixture City","addressCountry":{"name":"DE"}}}}]}
+</script>
+<script type="application/configuration">
+{"price":{
+"a":{"priceCategoryId":"101","number":1,"title":"Premium","defaultFormattedPrice":"1.234,56 €","ticketTypes":[{"statusText":"verfügbar"}]},
+"b":{"priceCategoryId":"102","number":2,"title":"Unavailable","defaultFormattedPrice":"46,00 EUR","ticketTypes":[]},
+"c":{"priceCategoryId":"103","number":3,"title":"Unknown","defaultFormattedPrice":"0,00 €","ticketTypes":[]},
+"d":{"priceCategoryId":"104","number":4,"title":"Mixed offers","defaultFormattedPrice":"62,00 €","ticketTypes":[{"statusText":"nicht verfügbar"},{"statusText":"verfügbar"}]},
+"e":{"priceCategoryId":"105","number":5,"title":"Mixed DOM","defaultPriceAsInt":73000,"currency":"EUR","ticketTypes":[]},
+"f":{"priceCategoryId":"106","number":6,"title":"Sold out","defaultFormattedPrice":"84,00 €","ticketTypes":[{"statusText":"ausverkauft"}]}
+},"seatmapOptions":{"evId":"21626750"}}
+</script></head><body>
+<form name="pk102"><div class="ticket-type-wrapper ticket-type-item-wrapper-unavailable"></div></form>
+<form name="pk999"><div class="ticket-type-wrapper ticket-type-item-wrapper-unavailable"></div></form>
+<form name="pk105"><div class="ticket-type-wrapper ticket-type-item-wrapper-unavailable"></div><div class="ticket-type-wrapper"></div></form>
+<li class="js-dd-pc-item" data-key="101" data-tracking-label="Premium"><span class="js-dd-square" style="background-color: #ff0000"></span></li>
+<svg>
+<g class="background"><path id="decorative" fill="#ff0000"></path></g>
+<g class="linked-blocks">
+<g><path id="134217740" class="lb has-hover" fill="#ff0000"></path><text>Block A</text></g>
+<g><path id="134218319" class="lb has-hover" fill="#ebebeb"></path><text>Front of Stage</text></g>
+<g><path id="315" class="lb has-hover" fill="#b99297"></path><text>Stehplatz</text><text>Block H hinten</text><title>Info Feld</title></g>
+<g><path id="999" class="lb" fill="#123456"></path></g>
+</g>
+</svg></body></html>

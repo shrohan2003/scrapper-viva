@@ -1,10 +1,8 @@
-// Run on EVENTIM pages and wait for the seating blocks to appear.
-const BLOCKS = 'g.block-outlines path.bo[id^="bo"], g.linked-blocks path.lb[id]';
+// Capture the loaded event page only after the user requests it.
 let busy = false;
 
 function checkForCapture() {
   if (busy || !location.pathname.startsWith("/event/")) return;
-  if (document.querySelectorAll(BLOCKS).length === 0) return;
 
   busy = true;
 

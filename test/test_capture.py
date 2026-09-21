@@ -1,6 +1,5 @@
 """Exercise the local bridge and failures that previously confused users."""
 
-import copy
 from http.server import ThreadingHTTPServer
 import json
 import threading
@@ -9,7 +8,7 @@ from urllib.request import Request, urlopen
 
 import pytest
 
-from capture import build_handler, complete_result, event_url_error, result_issues
+from capture import build_handler, event_url_error
 
 
 URL = "https://www.eventim.de/event/test-21626750/"
@@ -30,20 +29,6 @@ def test_individual_event_urls(url):
 ])
 def test_reject_unsupported_urls(url):
     assert event_url_error(url)
-
-
-def test_missing_category_status_is_explained():
-    result = {
-        "event_id": "21626750", "title": "Test", "start_datetime": "2027-05-22",
-        "venue": {"name": "Venue", "city": "City", "country": "DE"},
-        "ticket_categories": [{"name": "Seated", "price": 0, "currency": "EUR", "availability": "unavailable"}],
-        "seating_map": {"blocks": [{"id": "1", "available": False}]},
-    }
-    assert complete_result(result)
-    incomplete = copy.deepcopy(result)
-    incomplete["ticket_categories"][0]["availability"] = None
-    assert not complete_result(incomplete)
-    assert result_issues(incomplete) == ["Ticket category 1: missing/unknown availability."]
 
 
 def test_bridge_requires_request_and_matching_event():

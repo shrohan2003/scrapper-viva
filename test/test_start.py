@@ -43,4 +43,4 @@ def test_launcher_forwards_args_as_separate_values(tmp_path, monkeypatch):
         return SimpleNamespace(returncode=2)
     monkeypatch.setattr(start.subprocess, "run", run)
     assert start.main(["--output", "folder with spaces/result.json"]) == 2
-    assert calls[0][0] == [str(python), str(start.ROOT / "capture.py"), "--output", "folder with spaces/result.json"]
+    assert calls[0][0] == [str(python), str(start.ROOT / "scrape.py"), "--output", "folder with spaces/result.json"]

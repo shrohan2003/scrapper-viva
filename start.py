@@ -102,9 +102,9 @@ def main(argv=None):
             return 0
         print("\nScrapper Viva - EVENTIM capture", flush=True)
         print("Use Chrome with the Scrapper Viva extension enabled.", flush=True)
-        print("Choose one event date and city, then open its coloured seating map.\n", flush=True)
+        print("For live capture, choose one event date and city and follow the prompts.\n", flush=True)
         return subprocess.run(
-            [str(python), str(ROOT / "capture.py"), *args], cwd=ROOT, check=False,
+            [str(python), str(ROOT / "scrape.py"), *args], cwd=ROOT, check=False,
         ).returncode
     except (OSError, RuntimeError, subprocess.SubprocessError) as error:
         print(f"Setup error: {error}", file=sys.stderr)

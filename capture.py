@@ -1,14 +1,12 @@
 """Capture EVENTIM through the Chrome extension and parse it with Python."""
 
-import argparse
 import json
 import threading
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
-from pathlib import Path
 from urllib.parse import urlparse
 
-from scrape import extract_event_id, parse_event
+from event_parser import extract_event_id
 
 
 PORT = 8765
@@ -17,7 +15,10 @@ MAX_BYTES = 8_000_000
 
 def event_url_error(url):
     """Explain why a URL cannot be used for a single-event capture."""
-    parsed = urlparse(url)
+    try:
+        parsed = urlparse(url)
+    except (TypeError, ValueError):
+        return "Use a valid full EVENTIM event URL."
     if parsed.scheme != "https" or parsed.hostname not in {"www.eventim.de", "eventim.de"}:
         return "Use a full https://www.eventim.de/event/... URL."
     if not parsed.path.startswith("/event/"):
@@ -82,14 +83,11 @@ def build_handler(expected_id, state, lock, received):
                 return
 
             page_url = str(payload.get("url", ""))
-            parsed_url = urlparse(page_url)
             html = payload.get("html")
 
             # Reject data from a different tab or a non-EVENTIM site.
             valid_page = (
-                parsed_url.scheme == "https"
-                and parsed_url.hostname in {"www.eventim.de", "eventim.de"}
-                and parsed_url.path.startswith("/event/")
+                event_url_error(page_url) is None
                 and extract_event_id(page_url) == expected_id
             )
             if not valid_page or not isinstance(html, str) or not html:
@@ -114,139 +112,45 @@ def build_handler(expected_id, state, lock, received):
     return BridgeHandler
 
 
-def result_issues(result):
-    """Give concrete reasons an incomplete capture must not replace good data."""
-    issues = []
-    for field in ("event_id", "title", "start_datetime"):
-        if not result.get(field):
-            issues.append(f"Missing {field}.")
-    for field in ("name", "city", "country"):
-        if not result.get("venue", {}).get(field):
-            issues.append(f"Missing venue {field}.")
-    categories = result.get("ticket_categories", [])
-    if not categories:
-        issues.append("No ticket categories were found.")
-    for index, row in enumerate(categories, 1):
-        missing = [key for key in ("name", "currency") if not row.get(key)]
-        if row.get("price") is None:
-            missing.append("price")
-        if row.get("availability") not in {"available", "unavailable"}:
-            missing.append("availability")
-        if missing:
-            issues.append(f"Ticket category {index}: missing/unknown {', '.join(missing)}.")
-    blocks = result.get("seating_map", {}).get("blocks", [])
-    if not blocks:
-        issues.append("No supported seating sections were found. Open the coloured seating map.")
-    unknown = sum(block.get("available") is not True and block.get("available") is not False for block in blocks)
-    if unknown:
-        issues.append(f"Availability is unknown for {unknown} seating sections.")
-    return issues
+class CaptureError(RuntimeError):
+    """A browser capture could not be acquired."""
 
 
-def complete_result(result):
-    """Check required data before replacing result.json."""
-    return not result_issues(result)
-
-
-def main():
-    """Open a tab, wait for Enter, receive the page, and write JSON."""
-    parser = argparse.ArgumentParser(
-        description="Capture and parse an EVENTIM event"
-    )
-    parser.add_argument(
-        "--url",
-        help="EVENTIM event URL; prompted if omitted",
-    )
-    parser.add_argument(
-        "--output",
-        default="result.json",
-        help="Output JSON file",
-    )
-    args = parser.parse_args()
-
-    # Running "python capture.py" prompts for the URL like START_HERE.
-    url = (args.url or input("Paste the EVENTIM event URL: ")).strip()
-    event_id = extract_event_id(url)
+def capture_html(url, timeout=45, open_browser=True, prompt=None):
+    """Acquire rendered HTML; parsing and output live in separate modules."""
     error = event_url_error(url)
     if error:
-        parser.error(error)
-
+        raise CaptureError(error)
     state = {"requested": False, "html": None}
-    lock = threading.Lock()
     received = threading.Event()
-    handler = build_handler(event_id, state, lock, received)
-
-    # Bind only to this computer; the raw HTML is kept in memory.
+    lock = threading.Lock()
+    handler = build_handler(extract_event_id(url), state, lock, received)
     try:
         server = ThreadingHTTPServer(("127.0.0.1", PORT), handler)
     except OSError as error:
-        parser.error(f"Local capture port {PORT} is unavailable: {error}")
-
+        raise CaptureError(f"Local port {PORT} is unavailable. Close another capture and retry: {error}") from error
     worker = threading.Thread(target=server.serve_forever, daemon=True)
     worker.start()
-
     try:
-        # Request a new tab in the existing default-browser window.
-        if not webbrowser.open_new_tab(url):
-            print("Could not open a tab automatically. Open this URL:")
-            print(url)
-
-        print("Open the coloured seating map in the new Chrome tab.")
-        print("If another browser opened, open this link in Chrome:", url)
-        input("When the map is visible, return here and press Enter: ")
-
+        if open_browser:
+            webbrowser.open_new_tab(url)
+        print("Open this event in Chrome with Scrapper Viva enabled:", url, flush=True)
+        print("If a seating map is offered, open Saalplanbuchung and wait for all colours to load.", flush=True)
+        print("If this event has no seating map, wait for its ticket details to load instead.", flush=True)
+        (prompt or input)("When ready, return here and press Enter: ")
         with lock:
             state["requested"] = True
-
-        print("Receiving the rendered page from the extension...")
-        if not received.wait(timeout=45):
-            print(
-                "Capture timed out. Check that the extension is enabled "
-                "and the coloured map is visible."
-            )
-            return 2
-
+        print("Receiving the rendered page...", flush=True)
+        if not received.wait(timeout):
+            raise CaptureError("Capture timed out. Check the extension/profile and reload the event page.")
         with lock:
-            html = state["html"]
-
-        result = parse_event(html, url)
-        output = Path(args.output)
-
-        if not complete_result(result):
-            error_path = output.with_name(
-                output.stem + ".capture_error.json"
-            )
-            error_path.write_text(
-                json.dumps(result, ensure_ascii=False, indent=2) + "\n",
-                encoding="utf-8",
-            )
-            print(f"Incomplete capture. Diagnostic: {error_path}")
-            print(f"Existing {output} was not overwritten.")
-            for issue in result_issues(result):
-                print("-", issue)
-            print("Warnings:", result["warnings"])
-            return 2
-
-        output.write_text(
-            json.dumps(result, ensure_ascii=False, indent=2) + "\n",
-            encoding="utf-8",
-        )
-
-        print("Saved:", output)
-        print("Event:", result["event_id"], result["title"])
-        print("Ticket categories:", len(result["ticket_categories"]))
-        print("Seating blocks:", len(result["seating_map"]["blocks"]))
-        print("Warnings:", result["warnings"])
-        return 0
-
+            return state["html"]
     finally:
         server.shutdown()
         server.server_close()
+        worker.join(timeout=2)
 
 
 if __name__ == "__main__":
-    try:
-        raise SystemExit(main())
-    except (KeyboardInterrupt, EOFError):
-        print("\nCapture cancelled.")
-        raise SystemExit(130)
+    from scrape import main
+    raise SystemExit(main())

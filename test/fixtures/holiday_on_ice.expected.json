@@ -1,0 +1,711 @@
+{
+  "event_id": "20995028",
+  "title": "Holiday on Ice - MIRAGE",
+  "start_datetime": "2026-11-27T19:30:00+01:00",
+  "venue": {
+    "name": "MERKUR Ostseehalle",
+    "city": "Kiel",
+    "country": "DE"
+  },
+  "ticket_categories": [
+    {
+      "id": "40945178",
+      "name": "Erste Reihe",
+      "price": 98.0,
+      "currency": "EUR",
+      "availability": "available"
+    },
+    {
+      "id": "40945174",
+      "name": "Sitzplatz Kategorie 1",
+      "price": 84.0,
+      "currency": "EUR",
+      "availability": "available"
+    },
+    {
+      "id": "40945175",
+      "name": "Sitzplatz Kategorie 2",
+      "price": 73.0,
+      "currency": "EUR",
+      "availability": "available"
+    },
+    {
+      "id": "40945176",
+      "name": "Sitzplatz Kategorie 3",
+      "price": 62.0,
+      "currency": "EUR",
+      "availability": "available"
+    },
+    {
+      "id": "40945177",
+      "name": "Sitzplatz Kategorie 4",
+      "price": 46.0,
+      "currency": "EUR",
+      "availability": "available"
+    }
+  ],
+  "seating_map": {
+    "present": true,
+    "blocks": [
+      {
+        "id": "13",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 2",
+        "price_category_id": "40945175"
+      },
+      {
+        "id": "31",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 3",
+        "price_category_id": "40945176"
+      },
+      {
+        "id": "53",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 1",
+        "price_category_id": "40945174"
+      },
+      {
+        "id": "71",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "95",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 2",
+        "price_category_id": "40945175"
+      },
+      {
+        "id": "115",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 4",
+        "price_category_id": "40945177"
+      },
+      {
+        "id": "145",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 1",
+        "price_category_id": "40945174"
+      },
+      {
+        "id": "170",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "190",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 3",
+        "price_category_id": "40945176"
+      },
+      {
+        "id": "216",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 4",
+        "price_category_id": "40945177"
+      },
+      {
+        "id": "242",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 2",
+        "price_category_id": "40945175"
+      },
+      {
+        "id": "262",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "282",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 3",
+        "price_category_id": "40945176"
+      },
+      {
+        "id": "339",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 4",
+        "price_category_id": "40945177"
+      },
+      {
+        "id": "341",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 2",
+        "price_category_id": "40945175"
+      },
+      {
+        "id": "361",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "381",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 4",
+        "price_category_id": "40945177"
+      },
+      {
+        "id": "396",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 3",
+        "price_category_id": "40945176"
+      },
+      {
+        "id": "410",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "425",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 4",
+        "price_category_id": "40945177"
+      },
+      {
+        "id": "437",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 3",
+        "price_category_id": "40945176"
+      },
+      {
+        "id": "452",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "471",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "512",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "544",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "568",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "612",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "650",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "672",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "703",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "742",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 1",
+        "price_category_id": "40945174"
+      },
+      {
+        "id": "783",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 1",
+        "price_category_id": "40945174"
+      },
+      {
+        "id": "802",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 1",
+        "price_category_id": "40945174"
+      },
+      {
+        "id": "822",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 1",
+        "price_category_id": "40945174"
+      },
+      {
+        "id": "849",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 2",
+        "price_category_id": "40945175"
+      },
+      {
+        "id": "870",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 2",
+        "price_category_id": "40945175"
+      },
+      {
+        "id": "888",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 1",
+        "price_category_id": "40945174"
+      },
+      {
+        "id": "908",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 1",
+        "price_category_id": "40945174"
+      },
+      {
+        "id": "924",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 1",
+        "price_category_id": "40945174"
+      },
+      {
+        "id": "942",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 1",
+        "price_category_id": "40945174"
+      },
+      {
+        "id": "960",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 4",
+        "price_category_id": "40945177"
+      },
+      {
+        "id": "984",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 4",
+        "price_category_id": "40945177"
+      },
+      {
+        "id": "1002",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 3",
+        "price_category_id": "40945176"
+      },
+      {
+        "id": "1036",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 3",
+        "price_category_id": "40945176"
+      },
+      {
+        "id": "1059",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 2",
+        "price_category_id": "40945175"
+      },
+      {
+        "id": "1083",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 2",
+        "price_category_id": "40945175"
+      },
+      {
+        "id": "1107",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 2",
+        "price_category_id": "40945175"
+      },
+      {
+        "id": "1129",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 2",
+        "price_category_id": "40945175"
+      },
+      {
+        "id": "1151",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 2",
+        "price_category_id": "40945175"
+      },
+      {
+        "id": "1167",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 2",
+        "price_category_id": "40945175"
+      },
+      {
+        "id": "1641",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1676",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1715",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1733",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1772",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1797",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1820",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1846",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1864",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1875",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1898",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1918",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1937",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1954",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1970",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "1985",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2001",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2016",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2031",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2054",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2096",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2117",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2140",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2163",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2181",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2200",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2218",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2237",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2252",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2283",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2305",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2309",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2313",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2317",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2321",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2325",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2333",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2337",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2341",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "2345",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "5297",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "5307",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "5339",
+        "label": null,
+        "available": false,
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "5406",
+        "label": null,
+        "available": true,
+        "category": "Sitzplatz Kategorie 1",
+        "price_category_id": "40945174"
+      }
+    ]
+  },
+  "warnings": []
+}

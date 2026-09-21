@@ -1,10 +1,14 @@
 .venv/
+.venv-old/
 __pycache__/
 .pytest_cache/
+*.pyc
+.DS_Store
 .eventim_profile/
+tmp/
+dist/
+*.raw.html
 eventim_real_capture.html
 sample.html
-*.pyc
-dist/
-result.json
 *.capture_error.json
+# result.json and sanitized test/fixtures are intentional submission files.

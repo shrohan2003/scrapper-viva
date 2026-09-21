@@ -1,57 +1,47 @@
-SCRAPPER VIVA - START HERE
-Version 1.1.0
+SCRAPPER VIVA 1.2.0 - FINAL SUBMISSION PACKAGE
 
-WHAT THIS DOES
-Copies an EVENTIM Germany event's name, date, venue, ticket prices,
-and seating-section availability into a file called result.json.
+This program reads an EVENTIM event page and saves ticket/event details as JSON.
+It includes the real result for the Holiday on Ice event required by the task.
 
-1. EXTRACT THE ZIP
-Extract the whole folder to a permanent location, such as Documents.
-Do not run it from inside the ZIP. Keep all the files together.
+TO REVIEW OR SUBMIT
+1. Extract the entire ZIP.
+2. Open README.md for the approach, running instructions and limitations.
+3. Open result.json for the required Holiday on Ice capture.
+4. See SUBMISSION_CHECKLIST.md for the private GitHub submission steps.
+   No repository has been created and nothing has been submitted for you.
 
-2. INSTALL THE TWO PREREQUISITES
-- Python 3.11 or newer: https://www.python.org/downloads/
-  Windows: enable Add Python to PATH if the installer offers it.
-- Google Chrome: https://www.google.com/chrome/
-  On Linux, Python's venv support must also be installed.
+TO RUN A NEW LIVE CAPTURE
+You need Python 3.11 or newer, Google Chrome, and internet access.
+The ZIP is source code; it does not contain Python or Chrome.
 
-3. ADD THE CHROME EXTENSION (ONCE PER COMPUTER/CHROME PROFILE)
-Open Chrome and type chrome://extensions into the address bar.
-Turn on Developer mode, choose Load unpacked, and select the extension
-folder INSIDE the extracted Scrapper-Viva folder.
-Keep that folder in place after installation.
-If an older Scrapper Viva extension is installed from a different folder,
-remove that old copy first so only one copy is enabled.
-On the Mac already set up by Codex, use the existing project or switch the
-extension to this extracted folder if you choose to run this new copy.
+1. Keep the extracted folder in a permanent location.
+2. In Chrome, open chrome://extensions, turn on Developer mode, choose
+   Load unpacked, and select the extension folder inside this project.
+3. Launch for your computer:
+   Mac: double-click START_HERE.command.
+   Windows: double-click START_HERE.bat (extract the ZIP first).
+   Linux: open a terminal in this folder and run: sh START_HERE.sh
+4. Paste an individual EVENTIM /event/ link into the terminal.
+5. Open that event in Chrome. Click Saalplanbuchung if offered and wait for
+   the coloured seating map. Leave the category filter on Alle Kategorien.
+6. Return to the terminal and press Enter. It saves result.json in this folder.
 
-4. RUN THE FILE FOR YOUR COMPUTER
-Mac:     Double-click START_HERE.command.
-Windows: Double-click START_HERE.bat.
-Linux:   Open a terminal in the folder and run: sh START_HERE.sh
+The first launch installs Python packages into a local .venv folder.
+Later launches reuse them. Do not copy .venv between computers.
 
-The first run creates .venv and installs the required Python packages.
-It needs internet access. Later runs reuse that computer's environment.
-Do not copy the .venv folder between computers.
+A new successful run replaces result.json, including when some fields are
+missing. Missing values are null and explained in warnings. Keep a copy of the
+included submission result before capturing another event. Command-line users
+can use --output another-result.json to keep the included result unchanged.
 
-If the Mac launcher has lost its executable permission, open Terminal
-in the extracted folder and run: sh START_HERE.command
+MAC FALLBACK
+If double-clicking is blocked or the terminal closes, open Terminal, type cd
+followed by a space, drag the extracted Scrapper-Viva folder into Terminal,
+press Enter, then run: sh START_HERE.sh
 
-5. CAPTURE ONE SHOW
-Paste the full EVENTIM link for ONE event date and city.
-A tour page listing several dates is not an individual event link.
-When Chrome opens the event, click Saalplanbuchung (seating plan).
-Wait for the coloured map, then return to the terminal and press Enter.
-If another browser opens, open the same link manually in Chrome.
+TEST WITHOUT THE WEBSITE
+The README includes an offline command using the saved HTML fixture. It needs
+no Chrome extension or website connection after Python packages are installed.
 
-6. READ YOUR RESULT
-A successful run saves result.json in the extracted project folder.
-That file contains a snapshot; rerun the launcher to refresh it.
-A successful new capture replaces the old result.json, so copy it first
-if you want to keep previous captures.
-The examples folder contains an older sample, not live ticket data.
-
-Need more detail? Open README.md.
-No Python or Chrome installer is bundled. Website changes can require
-future scraper updates. This release was tested on macOS; Windows and
-Linux launchers are included but have not been run on those systems here.
+Validated on macOS. Windows/Linux launchers and a CI matrix are included, but
+native Windows/Linux execution was not available during this validation.

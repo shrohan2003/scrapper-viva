@@ -1,19 +1,26 @@
-# Version 1.1.0
+# Changes
 
-## Issues fixed
+## 1.2.0 — final assignment package
 
-1. **Mac/Linux launcher line endings:** the original shell files contained Windows CRLF endings, which can make Unix systems read the interpreter as `/bin/sh` plus an invalid carriage return. The release uses LF for shell files and CRLF for the Windows batch file, with executable mode recorded in the ZIP.
-2. **Unrecognized seating map:** the extension waited only for the older `g.block-outlines path.bo` SVG structure. The Santiano map uses `g.linked-blocks path.lb`, so the original capture timed out even while a coloured map was visible. Both the extension and parser now recognize both formats, retaining labels and IDs.
-3. **Unavailable ticket categories:** EVENTIM omitted `ticketTypes` for two unavailable categories. The parser returned an unknown status and the completeness check refused to save the capture. The parser now uses the matching category's unavailable rows to confirm the status. An empty list by itself remains unknown.
+- Capture the specified Holiday on Ice event (20995028) and include its actual
+  `result.json` at the project root.
+- Make `scrape.py --url ... --output ...` the live CLI; add offline `--html` mode.
+- Separate acquisition, pure parsing and output writing into distinct modules.
+- Save partial results with null fields and logged warnings, as required.
+- Handle malformed metadata, invalid dates, missing ticket types and unknown map
+  states without inventing values or rejecting all partial output.
+- Add a minimized real HTML fixture, expected JSON and saved synthetic fixtures;
+  remove the skipped test that depended on an absent local capture.
+- Include 44 passing tests, fixture provenance, approach/limitations notes and
+  explicit instructions for the manual Chrome seating-map step.
+- Include submission files in the release allowlist and keep result.json in Git.
+- Retain platform-specific launchers and add offline CLI validation to CI.
 
-## Packaging and usability
+## 1.1.0 — portability and Santiano support
 
-- Shared Python setup creates a fresh environment for each computer and installs pinned runtime packages on first use.
-- Platform launchers handle common Python command names and folders containing spaces, and preserve the program's exit status.
-- No virtual environment, browser profile, cache, raw captured HTML, or stale root result is included.
-- Tour/artist URLs now produce an explanation to choose an individual city/date.
-- Incomplete captures print specific missing fields instead of only an empty warnings list.
-- Cancellation closes cleanly; setup failures do not start a capture.
-- Regression tests and a three-platform CI workflow are included.
-
-See VALIDATION.md for what has actually been executed. This is a source distribution requiring separately installed Python and Chrome.
+- Add Mac, Windows and Linux launchers with automatic local environment setup.
+- Normalize POSIX line endings and preserve paths containing spaces.
+- Support linked-area SVG maps as well as block outlines.
+- Recognize explicitly unavailable category forms with empty ticket-type lists.
+- Provide pinned dependencies, a clean ZIP builder and the earlier Santiano
+  example (21626750).

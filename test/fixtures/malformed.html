@@ -1,0 +1,8 @@
+<!doctype html>
+<!-- Synthetic invalid and unexpected site data must not crash parsing. -->
+<html><head>
+<script type="application/ld+json">not valid JSON</script>
+<script type="application/ld+json">{"@type":"Event","name":{"bad":"type"},"startDate":"impossible","location":{"name":[],"address":"bad"}}</script>
+<script type="application/configuration">{broken</script>
+<script type="application/configuration">{"price":{"one":false,"two":{"number":{},"title":23,"defaultFormattedPrice":{"bad":"type"},"ticketTypes":42}}}</script>
+</head><body><h1>Fallback title</h1><svg><g class="block-outlines"><path class="bo" fill="#abcdef"></path></g></svg></body></html>
