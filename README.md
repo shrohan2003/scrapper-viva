@@ -23,7 +23,7 @@ Source: [Holiday on Ice – MIRAGE](https://www.eventim.de/event/holiday-on-ice-
 | Category prices | 98.00, 84.00, 73.00, 62.00, 46.00 EUR |
 | Category availability | All five available at capture time |
 | Seating map | Present; 94 section IDs, 37 available and 57 unavailable |
-| Captured / parsed | `2026-09-21T17:10:33+00:00` |
+| Captured / parsed | `2026-09-21T17:21:48+00:00` |
 | Required-field warnings | None |
 
 Availability is a snapshot, not a reservation or a guarantee about later stock.
@@ -137,8 +137,10 @@ structures, unavailable and unknown categories, malformed/missing data, dates,
 CLI output, local bridge event matching and startup failures. There are no
 optional missing fixtures and no live-website tests. The bridge test talks only
 to a temporary loopback server. See `VALIDATION.md` for results and platform
-limits. A GitHub Actions matrix is provided for macOS, Windows and Linux with
-Python 3.11 and 3.14; it has not been run by preparing this ZIP.
+limits. The [final-code GitHub Actions run](https://github.com/shrohan2003/scrapper-viva/actions/runs/35632145036)
+passed on macOS, Windows and Linux with Python 3.11 and 3.14: all six jobs
+succeeded. These checks cover tests, offline CLI output, setup and launcher
+commands. They do not prove live Chrome capture works on every computer.
 
 ## Investigation and implementation decisions
 
@@ -188,6 +190,146 @@ library; Python's standard library handles JSON, decimal conversion, timestamps,
 the local HTTP bridge and atomic file replacement. Acquisition, parsing and the
 CLI live in separate modules so each can be tested without the others.
 
+## Problems faced during implementation
+
+The following issues came up while building, testing and sharing the project.
+Some describe earlier versions; the explanations below distinguish those from
+the behaviour of the final 1.2.0 code.
+
+### Access Denied and browser sessions
+
+Some attempts to open EVENTIM displayed an **Access Denied** page. This was a
+website access failure: there was no usable event page to parse. A normal Chrome
+session could load the event on other attempts, so the workflow uses that session
+and captures the page after it loads. This does not establish the exact cause of
+the denial or guarantee that Chrome will always be allowed.
+
+The extension cannot bypass an access denial. If Chrome is blocked, wait until
+the event opens normally before requesting a capture. The earlier extension
+waited for map elements and would time out when none appeared. The final
+extension can send an event page even without a map, so a blocked or incomplete
+page may instead produce partial JSON with warnings. Always check the page and
+the output; a saved file alone is not proof of a complete capture.
+
+### A new browser window instead of the existing Chrome session
+
+An early browser-automation approach opened a separate window, and an attempted
+debugging connection reported that the browser connection was not ready. The
+desired workflow was to use a new tab in the user's existing Chrome session.
+
+The project now requests a tab through Python's `webbrowser` module and uses a
+small JavaScript extension to read its rendered HTML. Python handles acquisition
+coordination, parsing and output. Browser extensions need browser-side code;
+Python alone cannot read an arbitrary tab in a normally started Chrome session.
+Chrome should be the default browser, with the extension enabled in the profile
+being used. Tab/window placement still depends on the browser. If Safari or
+another browser opens, open the event manually in Chrome or use `--no-open`.
+
+### Missing HTML files and manual copying
+
+Early commands tried to read `eventim_real_capture.html` before that file had
+been saved, causing `FileNotFoundError`. A mistyped script name also caused
+Python to report that it could not open the file. Opening the website in Chrome
+does not automatically save an HTML file in the project folder.
+
+Manual copying through Developer Tools was used during development. On the
+Windows laptop, F12 opened an ASUS function instead of Developer Tools; the
+browser shortcut Ctrl+Shift+I avoided that key mapping. The final live workflow
+uses the extension to transfer HTML after Enter, so manual copying is no longer
+needed. Offline `--html` mode still requires an existing file at the given path.
+
+### Missing metadata, zero ticket categories and zero seating blocks
+
+An early saved sample produced an event title/date but no ticket categories or
+seating blocks. Another capture contained categories and blocks but no Event
+JSON-LD, leaving the title missing in the earlier parser.
+
+The parser now combines JSON-LD, embedded configuration, public metadata and
+rendered page elements. Opening **Saalplanbuchung** and allowing the map to load
+is still necessary to capture its sections. A successful parse of a small
+sample does not mean that the live event page contains the same fields.
+
+### Capture timeouts on Mac and different seating-map formats
+
+A Mac test reported a capture timeout. A timeout means Python received no page
+within the wait period; it does not by itself identify a Mac-specific bug.
+Check that the extension is installed in the correct Chrome profile, reload
+the event tab after installing/updating it, and keep the intended event open.
+
+The release investigation also identified a map-structure issue: the older
+extension waited only for `g.block-outlines path.bo`, whereas the Santiano map
+used `g.linked-blocks path.lb`. The parser now supports both formats. In the
+final version, the extension no longer requires a particular map selector before
+sending the page, allowing events without maps and partial data to be handled.
+
+The default wait after Enter is 45 seconds; `--timeout 90` allows more time.
+A longer wait does not fix a missing extension or wrong browser/profile.
+If no capture arrives, the command reports an error and preserves the previous
+output. This differs from receiving a page whose parsed data is incomplete.
+
+### Warnings and unavailable ticket categories
+
+Some unavailable categories omitted `ticketTypes`. Treating every empty list as
+sold out would invent information, so the parser checks explicit unavailable
+rows belonging to the same category. If there is no evidence, availability
+remains `null` with a warning.
+
+Earlier versions rejected incomplete captures. The final version intentionally
+saves partial parsed results with `null` values and logged warnings. Such a
+result can replace the chosen output file, so use another `--output` name to
+preserve an earlier capture. `warnings: []` means the parser detected no listed
+missing-data issue; it is not an independent live inventory check. VS Code's
+Problems counter for saved HTML is separate from this JSON warning list.
+
+### First-run setup and a terminal closing after a keypress
+
+The early launcher printed “Create the virtual environment and install
+requirements first.” Its “Press any key” prompt then closed the window as
+designed. The extracted ZIP had no `.venv`, even though the original development
+folder already had one. Running setup in the original folder did not prepare
+the extracted copy. A duplicated `python -m venv .venv` command also caused an
+argument error during initial setup.
+
+The final `start.py` creates the environment in the folder being launched and
+installs dependencies on first use. Python must still be installed separately.
+The ZIP excludes `.venv` because installed environments should not be copied
+between computers or operating systems.
+
+### Windows, Mac and Linux launcher differences
+
+A `.bat` file is the Windows launcher. macOS uses `.command`, and Linux uses
+`.sh`; all three call the same Python startup code. Shell files need LF line
+endings and may need executable permissions. `.gitattributes` and the release
+builder preserve the appropriate line endings and archive permissions. If a
+Mac extraction loses those permissions, run `sh START_HERE.sh` from Terminal.
+
+A `.command` file appearing white in VS Code was an editor language-highlighting
+issue, not evidence that the operating system was wrong or the script failed.
+Choose Shell Script as its language mode for highlighting; check LF separately.
+
+### Sharing the project as a ZIP
+
+Trying to share a folder through WhatsApp caused attachment confusion. Send
+the ZIP as a document, then extract it completely on the receiving computer.
+Opening a ZIP in VS Code displays compressed binary characters; it does not
+open an editable project. On Windows use **Extract All**, and on Mac unpack it
+in Finder before running the launcher. Keep the `extension` folder in place
+and install it in Chrome on each computer/profile.
+
+An earlier root README accidentally contained pytest's cache-directory note.
+It was replaced with the actual project guide. The current release packages
+the guide and source files explicitly, excluding installed packages and caches.
+
+### JSON does not refresh itself
+
+The user noticed that an older capture would not reflect later website changes.
+`result.json` is a snapshot. Run another live capture with a freshly loaded page
+to get current displayed values, and choose a separate output filename if the
+previous result must be retained. Keep only one tab for the requested event
+open to avoid capturing an older tab. `scraped_at` is the processing time;
+reparsing old HTML changes that timestamp without making its data fresh.
+Continuous automatic inventory updates are not implemented.
+
 ## Output and missing values
 
 `result.json` contains these required fields:
@@ -229,9 +371,10 @@ associations may be null even when the required ID and availability are known.
   Raw HTML is not saved by default. `--save-html file.raw.html` is an optional
   local debugging aid; raw pages may contain session data and should not be
   submitted. Only minimized fixtures are included.
-- The release was executed on macOS. Windows and Linux paths/launchers are
-  supplied and covered by portable tests/CI definitions, but native execution
-  on those systems remains to be verified.
+- Release notes document a manual macOS capture. The final automated suite,
+  offline CLI, setup and launcher checks have passed on GitHub's Windows,
+  macOS and Linux runners. These jobs do not exercise Chrome or the live site;
+  manual live capture still needs checking on each intended computer/profile.
 
 With more time, the first improvements would be a Playwright acquisition mode
 with explicit map readiness checks, fixtures for more venues and map states,
@@ -252,5 +395,7 @@ fallback for interactive sessions.
 
 To rebuild: `python build_release.py`. The ZIP includes source, the required
 result, tests and documentation. It excludes `.venv`, caches, raw captures and
-machine-specific browser profiles. `SUBMISSION_CHECKLIST.md` explains the
-remaining private GitHub handoff; no repository was created for this ZIP.
+machine-specific browser profiles. The current source is published at
+[shrohan2003/scrapper-viva](https://github.com/shrohan2003/scrapper-viva).
+`SUBMISSION_CHECKLIST.md` records the package's submission checklist; any
+recipient-specific handoff is separate from this public repository.
