@@ -1,0 +1,215 @@
+{
+  "event_id": "21626750",
+  "title": "SANTIANO - 15 Jahre - Die große Jubiläumstour 2027",
+  "start_datetime": "2027-05-22T19:00:00+02:00",
+  "venue": {
+    "name": "Freilichtbühne am Kalkberg",
+    "city": "BAD SEGEBERG",
+    "country": "DE"
+  },
+  "ticket_categories": [
+    {
+      "id": "42228936",
+      "name": "Sitzplatz",
+      "price": 99.9,
+      "currency": "EUR",
+      "availability": "available"
+    },
+    {
+      "id": "42228937",
+      "name": "Sitzplatz",
+      "price": 89.9,
+      "currency": "EUR",
+      "availability": "available"
+    },
+    {
+      "id": "42228938",
+      "name": "Sitzplatz",
+      "price": 79.9,
+      "currency": "EUR",
+      "availability": "available"
+    },
+    {
+      "id": "42228939",
+      "name": "Sitzplatz",
+      "price": 69.9,
+      "currency": "EUR",
+      "availability": "available"
+    },
+    {
+      "id": "42228940",
+      "name": "Stehplatz - Block F",
+      "price": 69.9,
+      "currency": "EUR",
+      "availability": "available"
+    },
+    {
+      "id": "42228941",
+      "name": "Stehplatz - Front of Stage",
+      "price": 89.9,
+      "currency": "EUR",
+      "availability": "unavailable"
+    },
+    {
+      "id": "42228942",
+      "name": "Sitzplatz",
+      "price": 89.9,
+      "currency": "EUR",
+      "availability": "available"
+    },
+    {
+      "id": "42228943",
+      "name": "Stehplatz - Steilwand",
+      "price": 89.9,
+      "currency": "EUR",
+      "availability": "available"
+    },
+    {
+      "id": "42228944",
+      "name": "Rollstuhlnutzende inkl. Begleiter (B)",
+      "price": 89.9,
+      "currency": "EUR",
+      "availability": "unavailable"
+    },
+    {
+      "id": "42228945",
+      "name": "Stehplatz",
+      "price": 69.9,
+      "currency": "EUR",
+      "availability": "available"
+    }
+  ],
+  "seating_map": {
+    "present": true,
+    "blocks": [
+      {
+        "id": "312",
+        "available": true,
+        "label": "Stehplatz Block G hinten Info Feld",
+        "category": "Stehplatz",
+        "price_category_id": "42228945"
+      },
+      {
+        "id": "315",
+        "available": true,
+        "label": "Stehplatz Block H hinten Info Feld Stehplatz",
+        "category": "Stehplatz",
+        "price_category_id": "42228945"
+      },
+      {
+        "id": "134217740",
+        "available": true,
+        "label": "Block A",
+        "category": "Sitzplatz",
+        "price_category_id": "42228936"
+      },
+      {
+        "id": "134217803",
+        "available": true,
+        "label": "Block B",
+        "category": "Sitzplatz",
+        "price_category_id": "42228936"
+      },
+      {
+        "id": "134217871",
+        "available": true,
+        "label": "Block C",
+        "category": "Sitzplatz",
+        "price_category_id": "42228936"
+      },
+      {
+        "id": "134217937",
+        "available": true,
+        "label": "Block D",
+        "category": "Sitzplatz",
+        "price_category_id": "42228936"
+      },
+      {
+        "id": "134218001",
+        "available": true,
+        "label": "Stehplatz Block F",
+        "category": "Stehplatz - Block F",
+        "price_category_id": "42228940"
+      },
+      {
+        "id": "134218009",
+        "available": true,
+        "label": "Block G links",
+        "category": "Sitzplatz",
+        "price_category_id": "42228937"
+      },
+      {
+        "id": "134218062",
+        "available": true,
+        "label": "Block G rechts",
+        "category": "Sitzplatz",
+        "price_category_id": "42228938"
+      },
+      {
+        "id": "134218114",
+        "available": true,
+        "label": "Block H links",
+        "category": "Sitzplatz",
+        "price_category_id": "42228937"
+      },
+      {
+        "id": "134218166",
+        "available": true,
+        "label": "Block H rechts",
+        "category": "Sitzplatz",
+        "price_category_id": "42228937"
+      },
+      {
+        "id": "134218218",
+        "available": true,
+        "label": "Block I",
+        "category": "Sitzplatz",
+        "price_category_id": "42228937"
+      },
+      {
+        "id": "134218303",
+        "available": false,
+        "label": "Stehplatz vor dem Kalkberg",
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "134218311",
+        "available": true,
+        "label": "Stehplatz vor der Steilwand",
+        "category": "Stehplatz - Steilwand",
+        "price_category_id": "42228943"
+      },
+      {
+        "id": "134218319",
+        "available": false,
+        "label": "Front of Stage",
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "134218360",
+        "available": false,
+        "label": "Block M",
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "134218376",
+        "available": false,
+        "label": "Block L",
+        "category": null,
+        "price_category_id": null
+      },
+      {
+        "id": "134218532",
+        "available": false,
+        "label": "Rollstuhlplätze Info Feld",
+        "category": null,
+        "price_category_id": null
+      }
+    ]
+  },
+  "scraped_at": "2026-09-21T13:24:33+00:00",
+  "warnings": []
+}

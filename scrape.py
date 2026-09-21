@@ -140,7 +140,7 @@ def normalize_availability(value):
     return None
 
 
-def extract_categories(config):
+def extract_categories(config, soup=None):
     """Read ticket price categories from EVENTIM's configuration."""
     price_map = config.get("price", {})
     if not isinstance(price_map, dict):
@@ -167,6 +167,19 @@ def extract_categories(config):
             availability = normalize_availability(ticket_type.get("statusText"))
             if availability is not None:
                 break
+
+        # Unavailable categories may omit all ticketTypes. Confirm the status
+        # from that category's rendered form instead of assuming empty = sold out.
+        if availability is None and soup is not None:
+            form = soup.find(
+                "form", attrs={"name": f"pk{item.get('priceCategoryId')}"}
+            )
+            rows = form.select(".ticket-type-wrapper") if form else []
+            if rows and all(
+                "ticket-type-item-wrapper-unavailable" in row.get("class", [])
+                for row in rows
+            ):
+                availability = "unavailable"
 
         category = {
             "id": (
@@ -235,9 +248,12 @@ def extract_blocks(soup, legend):
         "#dcdcdc",
     }
 
-    for path in soup.select('g.block-outlines path.bo[id^="bo"]'):
-        # EVENTIM uses IDs like "bo53"; the result stores "53".
-        block_id = path.get("id", "")[2:]
+    selector = 'g.block-outlines path.bo[id^="bo"], g.linked-blocks path.lb[id]'
+    for path in soup.select(selector):
+        # Older maps prefix IDs with "bo"; linked-area maps use plain IDs.
+        block_id = path.get("id", "")
+        if block_id.startswith("bo"):
+            block_id = block_id[2:]
         if not block_id or block_id in seen_ids:
             continue
         seen_ids.add(block_id)
@@ -245,6 +261,12 @@ def extract_blocks(soup, legend):
         color = str(path.get("fill") or "").strip().lower()
         classes = {str(name).lower() for name in path.get("class", [])}
         category = legend.get(color)
+        linked_label = None
+        if "lb" in classes:
+            linked_label = " ".join(
+                text.get_text(" ", strip=True)
+                for text in path.parent.find_all("text", recursive=False)
+            ).strip() or None
 
         if color in grey_colors:
             available = False
@@ -260,6 +282,7 @@ def extract_blocks(soup, legend):
                 path.get("aria-label")
                 or path.get("data-label")
                 or path.get("title")
+                or linked_label
             ),
             "category": category["name"] if category else None,
             "price_category_id": category["id"] if category else None,
@@ -310,7 +333,7 @@ def parse_event(html, url):
         or extract_country(soup)
     )
 
-    categories = extract_categories(config)
+    categories = extract_categories(config, soup)
     legend = extract_color_legend(soup, categories)
     blocks = extract_blocks(soup, legend)
 

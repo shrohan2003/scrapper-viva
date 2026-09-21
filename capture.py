@@ -15,6 +15,21 @@ PORT = 8765
 MAX_BYTES = 8_000_000
 
 
+def event_url_error(url):
+    """Explain why a URL cannot be used for a single-event capture."""
+    parsed = urlparse(url)
+    if parsed.scheme != "https" or parsed.hostname not in {"www.eventim.de", "eventim.de"}:
+        return "Use a full https://www.eventim.de/event/... URL."
+    if not parsed.path.startswith("/event/"):
+        return (
+            "This is not an individual event page. On the tour/artist page, "
+            "choose one city and date, then copy its /event/... link."
+        )
+    if not extract_event_id(url):
+        return "The event link must contain its numeric event ID. Copy the full address from Chrome."
+    return None
+
+
 def build_handler(expected_id, state, lock, received):
     """Create a local HTTP handler for one capture run."""
 
@@ -74,6 +89,7 @@ def build_handler(expected_id, state, lock, received):
             valid_page = (
                 parsed_url.scheme == "https"
                 and parsed_url.hostname in {"www.eventim.de", "eventim.de"}
+                and parsed_url.path.startswith("/event/")
                 and extract_event_id(page_url) == expected_id
             )
             if not valid_page or not isinstance(html, str) or not html:
@@ -98,28 +114,38 @@ def build_handler(expected_id, state, lock, received):
     return BridgeHandler
 
 
+def result_issues(result):
+    """Give concrete reasons an incomplete capture must not replace good data."""
+    issues = []
+    for field in ("event_id", "title", "start_datetime"):
+        if not result.get(field):
+            issues.append(f"Missing {field}.")
+    for field in ("name", "city", "country"):
+        if not result.get("venue", {}).get(field):
+            issues.append(f"Missing venue {field}.")
+    categories = result.get("ticket_categories", [])
+    if not categories:
+        issues.append("No ticket categories were found.")
+    for index, row in enumerate(categories, 1):
+        missing = [key for key in ("name", "currency") if not row.get(key)]
+        if row.get("price") is None:
+            missing.append("price")
+        if row.get("availability") not in {"available", "unavailable"}:
+            missing.append("availability")
+        if missing:
+            issues.append(f"Ticket category {index}: missing/unknown {', '.join(missing)}.")
+    blocks = result.get("seating_map", {}).get("blocks", [])
+    if not blocks:
+        issues.append("No supported seating sections were found. Open the coloured seating map.")
+    unknown = sum(block.get("available") is not True and block.get("available") is not False for block in blocks)
+    if unknown:
+        issues.append(f"Availability is unknown for {unknown} seating sections.")
+    return issues
+
+
 def complete_result(result):
     """Check required data before replacing result.json."""
-    venue = result["venue"]
-    categories = result["ticket_categories"]
-    blocks = result["seating_map"]["blocks"]
-
-    return bool(
-        result["event_id"]
-        and result["title"]
-        and result["start_datetime"]
-        and all(venue.get(key) for key in ("name", "city", "country"))
-        and categories
-        and all(
-            row.get("name")
-            and row.get("price") is not None
-            and row.get("currency")
-            and row.get("availability")
-            for row in categories
-        )
-        and blocks
-        and all(block.get("available") is not None for block in blocks)
-    )
+    return not result_issues(result)
 
 
 def main():
@@ -140,15 +166,10 @@ def main():
 
     # Running "python capture.py" prompts for the URL like START_HERE.
     url = (args.url or input("Paste the EVENTIM event URL: ")).strip()
-    parsed_url = urlparse(url)
     event_id = extract_event_id(url)
-
-    if (
-        parsed_url.scheme != "https"
-        or parsed_url.hostname not in {"www.eventim.de", "eventim.de"}
-        or not event_id
-    ):
-        parser.error("Enter a full https://www.eventim.de/event/... URL")
+    error = event_url_error(url)
+    if error:
+        parser.error(error)
 
     state = {"requested": False, "html": None}
     lock = threading.Lock()
@@ -171,6 +192,7 @@ def main():
             print(url)
 
         print("Open the coloured seating map in the new Chrome tab.")
+        print("If another browser opened, open this link in Chrome:", url)
         input("When the map is visible, return here and press Enter: ")
 
         with lock:
@@ -199,7 +221,9 @@ def main():
                 encoding="utf-8",
             )
             print(f"Incomplete capture. Diagnostic: {error_path}")
-            print("Existing result.json was not overwritten.")
+            print(f"Existing {output} was not overwritten.")
+            for issue in result_issues(result):
+                print("-", issue)
             print("Warnings:", result["warnings"])
             return 2
 
@@ -221,4 +245,8 @@ def main():
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    try:
+        raise SystemExit(main())
+    except (KeyboardInterrupt, EOFError):
+        print("\nCapture cancelled.")
+        raise SystemExit(130)

@@ -1,248 +1,146 @@
-# Scrapper Viva — EVENTIM Scraper
+# Scrapper Viva — EVENTIM scraper
 
-A Python project that reads an EVENTIM event page from your browser and saves event details, ticket categories, and seating-block information as JSON.
+Version **1.1.0**. Start with **READ_ME_FIRST.txt** for plain-language instructions.
 
-You open the seating map yourself. After you press Enter in the terminal, a small Chrome extension sends the rendered page to Python, which extracts the data and writes `result.json`.
-
-## Current status
-
-The complete Windows launcher workflow has been tested successfully. The tested event produced 5 ticket categories, 94 seating blocks, and no parser warnings. These counts belong to that event and are not expected for every event.
-
-macOS and Linux launchers are included, but have not yet been tested on those operating systems. Four parser tests passed locally with the saved event HTML available.
+This tool reads a rendered EVENTIM Germany event page in your normal Chrome session and saves event metadata, ticket categories, prices, and seating/standing sections as JSON. Open the coloured seating map yourself, then press Enter in the launcher. The extension sends the page only to the Python server on your computer.
 
 ## Requirements
 
-- Python 3.11 or newer; development was done with Python 3.11.
-- Google Chrome with the included extension installed and enabled.
-- Chrome set as your default browser for automatic opening.
-- An internet connection and an EVENTIM Germany event page with a supported coloured seating map.
+- Python **3.11 or newer**, installed separately.
+- Google Chrome, with the included extension installed in the profile you use.
+- Internet for first-time package installation and the EVENTIM website.
+- A writable, fully extracted project folder in a permanent location.
+- On Linux, Python's `venv` support (for example the matching `python3-venv` package on Debian/Ubuntu).
+- An individual `https://www.eventim.de/event/...` page with a supported coloured SVG seating map.
 
-The Python dependencies are listed in `requirements.txt`. Playwright is not required for the current extension-based workflow.
+The ZIP includes source code and pinned Python dependency versions. It does not bundle Python, Chrome, or a computer-specific virtual environment.
 
-## Project files
+## Setup and running
 
-```text
-scrapper viva/
-├── README.md
-├── requirements.txt
-├── scrape.py
-├── capture.py
-├── START_HERE.bat
-├── START_HERE.command
-├── START_HERE.sh
-├── .gitignore
-├── extension/
-│   ├── manifest.json
-│   ├── background.js
-│   └── content.js
-├── test/
-│   └── test_scrape.py
-└── result.json
-```
+1. Extract the entire ZIP. Keep the files together and leave the extension folder in place after installation.
+2. Open `chrome://extensions` in Chrome. Enable **Developer mode**, choose **Load unpacked**, and select this project's `extension` folder. Enable **Scrapper Viva EVENTIM Bridge**.
+3. Start the launcher for your operating system:
 
-`capture.py` handles the browser-to-Python connection and saves successful captures. `scrape.py` extracts fields from HTML. The three launchers run the same Python program using the launch format supported by each operating system.
-
-The `.venv` folder is created during setup. Create it separately on each computer; do not copy a Windows virtual environment to macOS or Linux.
-
-## First-time setup
-
-Download or copy the project to your computer. Open a terminal inside the project folder, then follow the steps for your operating system.
-
-### Windows
-
-Run these commands in PowerShell:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-```
-
-If `python` is not recognised but the Python launcher is installed, use `py -3 -m venv .venv` for the first command.
-
-For daily use, double-click `START_HERE.bat`. It opens a terminal and runs the program. You do not need to activate the virtual environment manually.
-
-### macOS
-
-Run these commands in Terminal:
-
-```sh
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
-chmod +x START_HERE.command
-```
-
-For daily use, double-click `START_HERE.command` in Finder. You can also run it from the project folder:
-
-```sh
-./START_HERE.command
-```
-
-### Linux
-
-Run these commands in a terminal:
-
-```sh
-python3 -m venv .venv
-.venv/bin/python -m pip install -r requirements.txt
-chmod +x START_HERE.sh
-```
-
-For daily use, run this from the project folder:
-
-```sh
-./START_HERE.sh
-```
-
-Some Linux file managers offer “Run in Terminal” when opening a shell script; double-click behaviour depends on your desktop settings. If creating the environment fails because `venv` is unavailable, install the Python virtual-environment package for your distribution and retry.
-
-Keep both `START_HERE.command` and `START_HERE.sh` saved with LF line endings. In VS Code, a `.command` file may appear as plain white text until its language mode is set to Shell Script. Its colour does not determine whether it works.
-
-## Install the Chrome extension — all operating systems
-
-1. Open Chrome and enter `chrome://extensions` in the address bar.
-2. Turn on **Developer mode**.
-3. Click **Load unpacked**.
-4. Select the project's `extension` folder, which contains `manifest.json`.
-5. Confirm that **Scrapper Viva EVENTIM Bridge** is enabled.
-
-Keep the extension folder in place after installation. If you change its code, click Reload on its extension card and reload the EVENTIM tab so the updated code runs there.
-
-## Capture an event
-
-1. Keep Chrome open in the profile where you installed the extension. Close older tabs for the same event to avoid capturing an older copy of the page.
-2. Start the launcher for your operating system.
-3. Paste the full event URL into the terminal and press Enter.
-4. The program requests a new tab in your default browser. Wait for the event page to load and open its coloured seating map.
-5. Once the map is visible and loaded, return to the terminal and press Enter.
-6. The extension sends the page to Python. A successful capture saves `result.json` and prints a summary.
-
-Example event URL used during development:
-
-```text
-https://www.eventim.de/event/holiday-on-ice-mirage-merkur-ostseehalle-20995028/
-```
-
-Example output:
-
-```text
-Saved: result.json
-Event: 20995028 Holiday on Ice - MIRAGE
-Ticket categories: 5
-Seating blocks: 94
-Warnings: []
-```
-
-When using a launcher, `result.json` is saved in the project folder beside `capture.py`. Open it in VS Code or another text editor.
-
-The program requests a new tab, but the browser and operating system determine the actual window used. Keep Chrome open and set as the default browser. If another browser opens, open the event URL manually in the Chrome profile with the extension.
-
-## How it works
-
-```text
-START_HERE → paste event URL → Chrome opens the page
-    → you open the seating map → you press Enter
-    → extension sends rendered HTML to local Python
-    → BeautifulSoup extracts the fields → result.json
-```
-
-“Rendered HTML” means the page structure after the website's JavaScript has loaded or changed it. Opening the seating map adds information that may be missing from the original page response.
-
-The parser reads event metadata from JSON-LD where available, with fallbacks to other embedded page data. Ticket categories come from EVENTIM's embedded configuration. Seating blocks come from the rendered SVG map, with availability inferred from map colours and CSS classes.
-
-### Why use an extension if the project is Python?
-
-Python performs the capture coordination, parsing, validation, and JSON output. The small JavaScript extension provides access to the page in your normal Chrome session. Chrome extensions use JavaScript; a normal Python script cannot directly read an arbitrary existing Chrome tab without a browser integration.
-
-This approach supports using your existing browser session and manually opening the seating map. It avoids requiring you to copy HTML through Developer Tools each time.
-
-The bridge listens at `127.0.0.1:8765` on your computer while the program runs. The extension checks for a capture request and sends the rendered HTML after you press Enter. The normal capture workflow holds raw HTML in memory and writes the extracted JSON to disk.
-
-## What the JSON contains
-
-| Field | Meaning |
+| Platform | Start |
 | --- | --- |
-| `event_id` | Event identifier extracted from the URL. |
-| `title` | Event name. |
-| `start_datetime` | Event start date/time as provided by the page. |
-| `venue` | Venue name, city, and country. |
-| `ticket_categories` | Category IDs, names, prices, currencies, and availability. |
-| `seating_map.present` | Whether seating-map information was detected. |
-| `seating_map.blocks` | Block IDs, inferred availability, and labels/category mappings where available. |
-| `scraped_at` | UTC time when Python parsed the captured HTML. |
-| `warnings` | Missing-data issues detected by the parser. |
+| macOS | Double-click `START_HERE.command` |
+| Windows | Double-click `START_HERE.bat` |
+| Linux | Open a terminal in the extracted folder and run `sh START_HERE.sh` |
 
-Seating blocks are not individual seats. A block marked available does not provide a seat count or guarantee that any particular seat can be purchased. Some labels or category mappings may be `null` because the captured map does not expose them.
+On first run, the launcher creates `.venv` and installs `requirements.txt` automatically. Later runs check the installed versions locally and only install packages if needed. You do not need to activate the environment or type pip commands.
 
-### The result is a snapshot
+On Windows, the launcher tries `py -3`, then `python`. On macOS/Linux it finds Python 3.11+ using common command names and macOS installation paths. Install Python from [python.org](https://www.python.org/downloads/) if it cannot be found. Enable **Add Python to PATH** if offered by the Windows installer, then reopen the launcher.
 
-The JSON does not update itself when EVENTIM changes prices or availability. For example, a file captured ten minutes ago still contains that capture's values.
+If extraction loses the Mac launcher's executable permission, run this from a terminal in the project folder:
 
-To refresh it, rerun the launcher, let a fresh event page load, open the seating map, and press Enter. A successful capture replaces the previous output file. Copy or rename the old file first if you want to keep a history.
+```sh
+sh START_HERE.command
+```
 
-`scraped_at` records parsing time, not proof of when EVENTIM last refreshed its inventory. An old browser tab can contain stale data, so use a freshly loaded page. Continuous automatic updates are not implemented in this version.
+Alternatively, restore permissions with `chmod +x START_HERE.command START_HERE.sh`.
 
-## Warnings and incomplete captures
+### Updating an existing installation
 
-`Warnings: []` means the parser did not detect any of its listed missing-data conditions. It does not independently prove that every value matches current live inventory.
+Keep a copy of any old results you want to retain. Replace the source files with this release, then click **Reload** on the extension card in `chrome://extensions` and reload existing EVENTIM tabs. If using a new extracted folder, remove the old Scrapper Viva extension and load the new folder; keep only one copy enabled. Each computer creates its own `.venv`; do not transfer that folder between operating systems.
 
-Warnings can report missing metadata, missing ticket categories, or a seating map whose rendered blocks could not be found. Common causes are incomplete page loading, not opening the map, or a website layout change.
+## Capture one event
 
-`capture.py` also checks required fields, category values, and block availability before saving. If these checks fail, it writes `result.capture_error.json` and leaves an existing `result.json` untouched. In that case, the existing result still belongs to an earlier successful run. An incomplete capture can occur even with an empty warning list because the completeness check covers additional conditions.
+1. Keep Chrome open in the profile where the extension is installed. Close older tabs for the same event.
+2. Run the appropriate launcher.
+3. Paste the full event URL and press Enter. Choose one city and date from a tour page first.
+4. In Chrome, click **Saalplanbuchung** (seating plan) and wait for the coloured map to load. Leave **all categories** selected for a complete view.
+5. Return to the launcher terminal and press Enter.
+6. A successful capture writes `result.json` beside `capture.py` and prints a summary.
 
-VS Code's Problems counter for a saved HTML file is separate from the scraper's `warnings` field. Inspect those editor messages separately; they do not automatically mean the JSON capture failed.
+The program asks your default browser to open the link. If that is not Chrome, open the printed link manually in the Chrome profile with the extension. Chrome does not have to be your default browser for a manual capture.
+
+Example individual event:
+
+```text
+https://www.eventim.de/event/santiano-15-jahre-die-grosse-jubilaeumstour-2027-freilichtbuehne-am-kalkberg-21626750/
+```
+
+A live capture on 21 September 2026 returned 10 ticket categories and 18 map sections for that event. Those counts are specific to that snapshot.
+
+## Output and limitations
+
+`result.json` includes:
+
+- Event ID, title, start date/time and venue.
+- Ticket category IDs, names, prices, currency and availability.
+- Map section IDs, labels, inferred availability, and category mappings where exposed.
+- UTC parsing time (`scraped_at`) and parser warnings.
+
+A capture is a snapshot. It does not update itself or guarantee that a displayed ticket remains purchasable. Sections are not individual seats or seat counts. A section can include more than one ticket category; its displayed colour does not enumerate every category inside it. Some labels or mappings may be null. Prices retained in embedded data for unavailable categories are not currently bookable offers; additional charges may apply.
+
+A successful new capture replaces the previous `result.json`. Copy the old file first if you want a history. The `examples` folder contains a dated sample; no pre-existing `result.json` is shipped at the project root.
+
+The capture bridge checks required fields before saving. An incomplete capture writes `result.capture_error.json`, prints the missing information, and preserves the existing result file. An older diagnostic file can remain after a later successful run; use the latest run's message and each file's `scraped_at` timestamp.
+
+The parser supports the legacy block-outline SVG map and the linked-area SVG map used by the tested Santiano event. Events without these structures, future website changes, and blocked pages can prevent a capture. The extension reads pages you can access normally; it does not bypass site access restrictions.
 
 ## Troubleshooting
 
-| Problem | What to do |
+| Message or symptom | Action |
 | --- | --- |
-| Access Denied | The site is refusing the browser request. During development, this happened on some attempts. Try opening the page normally in Chrome later. The extension reads a page you can already access; it does not bypass an access block. |
-| Capture timed out | The program waits up to 45 seconds after Enter. Check the extension is enabled in the correct Chrome profile, reload the event page if the extension was just installed, open the coloured map, and run again. |
-| Local port 8765 is unavailable | Another capture run or program may be using it. Close your previous capture terminal and retry. Run one capture at a time. |
-| A new window or wrong browser opens | Set Chrome as your default browser and keep its intended profile open. Tab/window placement is controlled by the browser. You can open the URL manually in the correct Chrome window. |
-| “Create the virtual environment…” | Complete the setup commands for your operating system in the project folder. |
-| No seating blocks or incomplete capture | Wait for the coloured map to finish loading. This workflow requires the supported SVG seating map; events without it are not currently supported by the capture bridge. |
-| Saved HTML file not found | This applies to the optional offline parser. Check the filename and location. Normal launcher use does not require a saved HTML file. |
-| macOS/Linux permission or shell errors | Apply the `chmod +x` command for your launcher and make sure its line endings are LF. |
+| Python not found | Install Python 3.11+, then reopen the launcher. |
+| Could not create .venv | Check the folder is writable; on Linux install the matching Python venv package. Rename a partially created `.venv` before retrying. |
+| Environment belongs to another OS / cannot run | Rename `.venv` to `.venv-old`, then rerun; a new environment will be created. |
+| Package installation failed | Check internet access and the printed pip error, then rerun. |
+| Tour/artist URL rejected | Click one city/date and copy its individual `/event/...` link. |
+| Capture timed out | Enable the extension in the right Chrome profile, reload the event, and open the supported coloured map. |
+| Port 8765 unavailable | Close another running capture; run one at a time. |
+| Incomplete capture | Read the printed reasons; wait for the full map and retry with all categories selected. |
+| Wrong browser opens | Open the printed URL manually in Chrome. |
+| Shell / permission error | Run `sh START_HERE.command` on Mac or `sh START_HERE.sh` on Linux. Keep both files saved with LF line endings. |
+| Access Denied | The website is refusing the page request; try opening it normally in Chrome later. |
 
-## Optional command-line use
+## Command-line options
 
-Run commands from the project folder. After activating the virtual environment, you can use:
+From the project folder, the shared entry point also works directly:
 
 ```sh
-python capture.py
-python capture.py --url "https://www.eventim.de/event/holiday-on-ice-mirage-merkur-ostseehalle-20995028/" --output latest.json
+python3 start.py --check
+python3 start.py --setup-only
+python3 start.py --help
+python3 start.py --url "https://www.eventim.de/event/...-21626750/" --output latest.json
 ```
 
-Without activation, replace `python` with `.\.venv\Scripts\python.exe` on Windows or `.venv/bin/python` on macOS/Linux. The output folder must already exist.
+On Windows, replace `python3` with `py -3` or `python`. Launchers also accept these arguments. `--check` and `--setup-only` prepare and check Python dependencies without opening an event; they do not test the browser extension. The output directory must already exist.
 
 To parse an HTML file you already saved:
 
 ```sh
-python scrape.py --url "https://www.eventim.de/event/holiday-on-ice-mirage-merkur-ostseehalle-20995028/" --html eventim_real_capture.html --output offline_result.json
+.venv/bin/python scrape.py --url "https://www.eventim.de/event/...-21626750/" --html saved.html --output offline_result.json
 ```
 
-The offline parser writes its result directly, even if fields are missing; it does not apply `capture.py`'s completeness protection. Its `scraped_at` is the time of parsing, not the original HTML capture time.
+Windows: use `.venv\Scripts\python.exe`. The offline parser does not enforce the live capture's completeness checks; its timestamp is parsing time.
 
-## Tests
+## Validation
 
-From the project folder, use the environment's Python:
+See **VALIDATION.md** for the release's actual checks and platform limits. The automated tests cover both map formats, unavailable categories, URL validation, the local HTTP bridge, and startup failures. They do not imply that every EVENTIM event is supported.
 
-Windows:
-
-```powershell
-.\.venv\Scripts\python.exe -m pytest -q
-```
-
-macOS/Linux:
+To run the tests:
 
 ```sh
+.venv/bin/python -m pip install -r requirements-dev.txt
 .venv/bin/python -m pytest -q
 ```
 
-Three tests use self-contained examples for price conversion, availability text, and event/map parsing. A fourth checks the development event's saved `eventim_real_capture.html` when that file is present. Since the HTML is excluded from Git, a fresh checkout should normally report three passed and one skipped. That fourth test expects the development snapshot's 5 categories and 94 blocks; it is not a general test for every event.
+Windows: replace `.venv/bin/python` with `.venv\Scripts\python.exe`.
 
-These parser tests do not verify the Chrome extension or the macOS/Linux launchers end to end.
+One optional test is skipped unless the old development capture `eventim_real_capture.html` is supplied. That file is intentionally not bundled. A GitHub Actions workflow is included for macOS, Windows and Linux on Python 3.11 and 3.14; including it does not mean those remote jobs have been run.
 
-## Scope and limitations
+## Files
 
-The current implementation targets EVENTIM Germany pages with the supported rendered map structure. Website changes may require parser updates. It captures displayed and embedded page data; it does not reserve or purchase tickets. The checked-in `result.json`, if present, is an example snapshot until you replace it with your own successful capture.
+- `START_HERE.command`, `START_HERE.bat`, `START_HERE.sh`: OS launchers.
+- `start.py`: automatic local environment setup and startup.
+- `capture.py`: local browser bridge and validated JSON output.
+- `scrape.py`: HTML parser.
+- `extension/`: Chrome extension.
+- `requirements.txt`: pinned runtime dependencies.
+- `requirements-dev.txt`, `test/`: optional developer tests.
+- `examples/`: dated sample output.
+- `build_release.py`: build a clean source ZIP with correct line endings and launcher permissions.
+
+The bridge listens only on `127.0.0.1:8765` while capturing. The normal workflow keeps raw HTML in memory and writes extracted JSON to disk.

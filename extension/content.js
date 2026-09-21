@@ -1,5 +1,5 @@
 // Run on EVENTIM pages and wait for the seating blocks to appear.
-const BLOCKS = 'g.block-outlines path.bo[id^="bo"]';
+const BLOCKS = 'g.block-outlines path.bo[id^="bo"], g.linked-blocks path.lb[id]';
 let busy = false;
 
 function checkForCapture() {

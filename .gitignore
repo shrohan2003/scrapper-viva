@@ -5,3 +5,6 @@ __pycache__/
 eventim_real_capture.html
 sample.html
 *.pyc
+dist/
+result.json
+*.capture_error.json
